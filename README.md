@@ -81,6 +81,19 @@ This will:
 
 ---
 
+## 🔐 Download Pretrained Model Weights
+
+To run evaluation without retraining, download the pretrained model checkpoints from the link below:
+
+📦 [Download Finetuned Model Weights from Google Drive](https://drive.google.com/drive/folders/1OujZbnsBpx6BOZapGWryvRcDxpbf5VJU?usp=sharing)
+
+
+### 📂 Where to Place the Files:
+
+After downloading, place them in the root directory.
+
+---
+
 ## 🤖 Model
 
 This project uses **RoBERTa-Large**, a Transformer-based language model with **355 million parameters**, fine-tuned for logical reasoning and QA tasks specific to the Ethos ML Challenge.

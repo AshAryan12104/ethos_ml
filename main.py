@@ -7,16 +7,16 @@ import torch.nn.functional as F
 import os
 from torch.optim import AdamW
 
-# ===================== CONFIG =====================
-# UPDATED: Switched to roberta-large for better performance
+# CONFIG 
+# roberta-large for better performance
 MODEL_NAME = "roberta-large"
 MAX_LEN = 256
-BATCH_SIZE = 4 # Adjust this based on your Colab GPU memory (4 or 8 is usually safe)
-EPOCHS = 3 # UPDATED: Increased to 3 for better training
-LR = 1e-5 # UPDATED: Lower learning rate is often better for larger models
+BATCH_SIZE = 4 
+EPOCHS = 3 
+LR = 1e-5 # Lower learning rate is often better for larger models
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# UPDATED: Centralized file paths
+# Centralized file paths (make sure to change accordingly)
 TRAIN_FILE_PATH = "/content/ethos_ml/train.csv"
 TEST_FILE_PATH = "/content/ethos_ml/test.csv"
 OUTPUT_DIR = "/content/ethos_ml/"
@@ -24,7 +24,7 @@ MODEL_SAVE_PATH = os.path.join(OUTPUT_DIR, "roberta_finetuned_model")
 
 print(f"\n🚀 Using device: {DEVICE.upper()}")
 
-# ===================== DATASET =====================
+# DATASET
 class QA_Dataset(Dataset):
     def __init__(self, df, tokenizer, is_train=True):
         self.df = df
@@ -67,25 +67,25 @@ class QA_Dataset(Dataset):
                 "options": options
             }
 
-# ===================== LOAD DATA =====================
+# LOAD DATA 
 print("\n📂 Loading data...")
 train_df = pd.read_csv("/content/ethos_ml/train.csv")
 test_df = pd.read_csv("/content/ethos_ml/test.csv")
 
-# UPDATED: Using RobertaTokenizer
+# Using RobertaTokenizer
 tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
 
 train_dataset = QA_Dataset(train_df, tokenizer, is_train=True)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
-# ===================== MODEL SETUP =====================
-# UPDATED: Using RobertaForMultipleChoice
+# MODEL SETUP 
+# Using RobertaForMultipleChoice
 print(f"\nSetting up model: {MODEL_NAME}...")
 model = RobertaForMultipleChoice.from_pretrained(MODEL_NAME)
 model.to(DEVICE)
 optimizer = AdamW(model.parameters(), lr=LR)
 
-# ===================== TRAINING =====================
+# TRAINING 
 print("\n🎯 Fine-tuning RoBERTa on training data...\n")
 model.train()
 for epoch in range(EPOCHS):
@@ -106,15 +106,14 @@ for epoch in range(EPOCHS):
 
 print("\n✅ Training complete!")
 
-# ===================== SAVE THE FINETUNED MODEL =====================
-# UPDATED: Added section to save the model and tokenizer
+#  SAVE THE FINETUNED MODEL 
 print(f"\n💾 Saving finetuned model to {MODEL_SAVE_PATH}...")
 model.save_pretrained(MODEL_SAVE_PATH)
 tokenizer.save_pretrained(MODEL_SAVE_PATH)
 print("✅ Model saved successfully!")
 
 
-# ===================== TEST PREDICTION =====================
+# TEST PREDICTION 
 print("\n🧠 Generating predictions on test data...")
 model.eval()
 
@@ -125,8 +124,8 @@ predictions = []
 
 with torch.no_grad():
     for batch in tqdm(test_loader):
-        input_ids = batch["input_ids"].to(DEVICE) # squeeze batch dim
-        attn_mask = batch["attention_mask"].to(DEVICE) # squeeze batch dim
+        input_ids = batch["input_ids"].to(DEVICE) 
+        attn_mask = batch["attention_mask"].to(DEVICE) 
         topic = batch["topic"][0]
         problem = batch["problem_statement"][0]
         options = [opt[0] for opt in batch["options"]]
@@ -142,9 +141,9 @@ with torch.no_grad():
             "correct_option": pred_option
         })
         
-# ===================== SAVE OUTPUT =====================
+#  SAVE OUTPUT 
 output_df = pd.DataFrame(predictions)
-output_path = "/content/ethos_ml/output1.csv"
+output_path = "/content/ethos_ml/output.csv"
 output_df.to_csv(output_path, index=False)
 
 print(f"\n📁 Output saved to {output_path}")

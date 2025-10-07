@@ -1,0 +1,8 @@
+# Ignore the fine-tuned model folder
+roberta_finetuned_model/
+
+# (optional) Add other stuff you want ignored
+__pycache__/
+*.log
+*.ckpt
+*.zip

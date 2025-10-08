@@ -12,8 +12,8 @@ from torch.optim import AdamW
 MODEL_NAME = "roberta-large"
 MAX_LEN = 256
 BATCH_SIZE = 4 
-EPOCHS = 3 
-LR = 1e-5 # Lower learning rate is often better for larger models
+EPOCHS = 10
+LR = 1e-5 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Centralized file paths (make sure to change accordingly)
@@ -143,7 +143,7 @@ with torch.no_grad():
         
 #  SAVE OUTPUT 
 output_df = pd.DataFrame(predictions)
-output_path = "/content/ethos_ml/output.csv"
+output_path = "./output.csv" #change path accordingly
 output_df.to_csv(output_path, index=False)
 
 print(f"\n📁 Output saved to {output_path}")
